@@ -11,12 +11,12 @@ pub struct ConnectionParams {
     pub port: i32
 }
 
-pub struct MacvendorsLogs {
+pub struct MacvendorsLog {
     pub id: i32,
     pub datetime: String
 }
 
-pub struct NmapLogs {
+pub struct NmapLog {
     pub id: i32,
     pub ip: String,
     pub mac: String,
@@ -85,6 +85,10 @@ pub fn write_database( conn:&Connection ) {
 
 pub fn record_macvendors_log( conn:&Connection ){
     conn.execute("INSERT INTO macvendors_logs (datetime) VALUES (NOW())", &[]).err();
+}
+
+pub fn record_nmap_log( log:NmapLog, conn:&Connection ){
+    conn.execute("INSERT INTO nmap_logs (ip, mac, vendor) VALUES ($1, $2, $3)", &[ &log.ip, &log.mac, &log.vendor ]).err();
 }
 
 pub fn get_last_macvendors_logs_record( conn:&Connection )->chrono::NaiveDateTime{
