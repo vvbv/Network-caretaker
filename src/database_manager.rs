@@ -1,4 +1,5 @@
 extern crate postgres;
+extern crate postgres_shared;
 
 use self::postgres::{Connection, TlsMode};
 
@@ -80,9 +81,17 @@ pub fn write_database( conn:&Connection ){
             )", 
             &[]
         );
-
 }
 
 pub fn record_macvendors_log( conn:&Connection ){
     conn.execute("INSERT INTO macvendors_logs (datetime) VALUES (NOW())", &[]);
+}
+
+pub fn get_last_macvendors_logs_record( conn:&Connection )->chrono::NaiveDateTime{
+    let stmt = conn.prepare("SELECT id, extract('epoch' from datetime)::bigint AS datetime FROM macvendors_logs ORDER BY datetime DESC LIMIT 1").unwrap();
+    let mut last_update_datetime:chrono::NaiveDateTime =  chrono::NaiveDateTime::from_timestamp(0, 0);
+    for row in &stmt.query(&[]).unwrap() {
+        last_update_datetime = chrono::NaiveDateTime::from_timestamp(row.get(1), 0);
+    }
+    last_update_datetime
 }
