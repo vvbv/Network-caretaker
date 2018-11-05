@@ -2,34 +2,44 @@ extern crate postgres;
 
 use self::postgres::{Connection, TlsMode};
 
-struct macvendors_logs {
-    id: i32,
-    datetime: String
+pub struct Connection_params {
+    pub user: String,
+    pub password: String, 
+    pub db_name: String,
+    pub host: String,
+    pub port: i32
 }
 
-struct nmap_logs {
-    id: i32,
-    ip: String,
-    mac: String,
-    vendor: String,
-    datetime: String
+pub struct Macvendors_logs {
+    pub id: i32,
+    pub datetime: String
 }
 
-struct config {
-    id: i32,
-    alias: String,
-    value: String,
-    alia: String,
-    datetime: String
+pub struct Nmap_logs {
+    pub id: i32,
+    pub ip: String,
+    pub mac: String,
+    pub vendor: String,
+    pub datetime: String
 }
 
-pub fn write_database( user:String, password:String, database_name:String, host:String, port:i32 ){
+pub struct Config {
+    pub id: i32,
+    pub alias: String,
+    pub value: String,
+    pub alia: String,
+    pub datetime: String
+}
 
+pub fn get_connection( params:&Connection_params )->Connection{
     let uri_conection = "postgres://".to_string()
-                        +  &user + &":" + &password 
-                        + &"@" + &host + &":" + &port.to_string() 
-                        + &"/" + &database_name;
-    let conn = Connection::connect( uri_conection, TlsMode::None).unwrap();
+                        +  &params.user + &":" + &params.password 
+                        + &"@" + &params.host + &":" + &params.port.to_string() 
+                        + &"/" + &params.db_name;
+    Connection::connect( uri_conection, TlsMode::None).unwrap()
+}
+
+pub fn write_database( conn:&Connection ){
 
     conn.execute(
             "CREATE TABLE macvendors_logs (
@@ -71,4 +81,8 @@ pub fn write_database( user:String, password:String, database_name:String, host:
             &[]
         );
 
+}
+
+pub fn record_macvendors_log( conn:&Connection ){
+    conn.execute("INSERT INTO macvendors_logs (datetime) VALUES (NOW())", &[]);
 }
