@@ -1,11 +1,9 @@
 #!/bin/bash
 clear
-echo "Clearing old binaries"
-rm build/network_observant > /dev/null
-echo "Clearing old binaries [Completed]"
+cd src
 echo "Compiling"
-rustc src/main.rs -o build/network_observant
+cargo build
 echo "Compiling [Completed]"
 echo "Running\n"
-build/network_observant
+cargo run
 echo "\nDone, return code $?"
