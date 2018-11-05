@@ -21,7 +21,7 @@ fn main() {
     
     let conn = lib::get_connection( &db_params );
     lib::write_database( &conn );
-    let host_list_ip_mac = nmap_manager::execute_nmap( "192.168.1.1".to_string() );
+    let host_list_ip_mac = nmap_manager::execute_nmap( "192.168.1.0".to_string() );
 
     let current_datetime:NaiveDateTime = Utc::now().naive_utc();
     let last_db_update_datetime:NaiveDateTime = lib::get_last_macvendors_logs_record( &conn );
@@ -31,7 +31,19 @@ fn main() {
         lib::record_macvendors_log( &conn );
     }
 
-    let host_list_ip_mac_manofacturer = macvendor_manager::get_vendors( host_list_ip_mac );
+    let host_list_ip_mac_vendor = macvendor_manager::get_vendors( host_list_ip_mac );
 
-    println!( "{:#?}",host_list_ip_mac_manofacturer );
+    for device in &host_list_ip_mac_vendor {
+        let (ip, mac, vendor) = device;
+        let log:lib::NmapLog = lib::NmapLog {
+            id:-1,
+            ip:ip.to_string(),
+            mac:mac.to_string(),
+            vendor:vendor.to_string(),
+            datetime:"1971-01-01 00:00:00".to_string()
+        };
+        lib::record_nmap_log( log, &conn );
+    }
+
+    println!( "{:#?}",host_list_ip_mac_vendor );
 }
