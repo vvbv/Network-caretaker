@@ -3,11 +3,11 @@ use std::process::Command;
 pub fn execute_nmap( default_route:String )->Vec<(String, String)>{
 
     let mut to_return = Vec::new();
-
+    let ip_route = default_route + "/24";
     let output = Command::new( "nmap" )
-                    .arg( "-sP" )
+                    .arg( "-sn" )
                     .arg( "-n" )
-                    .arg( default_route + "/24" )
+                    .arg( ip_route )
                     .output()
                     .expect( "failed to execute process" );
 
