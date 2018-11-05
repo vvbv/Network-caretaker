@@ -1,4 +1,4 @@
-# Network caretaker
+# Network caretaker [Alpha]
 Software that monitors devices connected to a network.
 
 # Dependences
