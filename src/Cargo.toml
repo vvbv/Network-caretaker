@@ -9,6 +9,3 @@ postgres = "0.15.2"
 [[bin]]
 name = "network_observant"
 path = "main.rs"
-
-[build]
-target = "../build"
