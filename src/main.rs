@@ -1,3 +1,5 @@
+extern crate postgres;
+
 mod nmap_manager;
 mod macvendor_manager;
 
